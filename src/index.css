@@ -245,6 +245,25 @@
     background-size: 60px 60px;
   }
 
+  /* Animated grid pattern */
+  .grid-pattern-animated {
+    background-image: 
+      linear-gradient(hsl(217 91% 60% / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(217 91% 60% / 0.05) 1px, transparent 1px);
+    background-size: 120px 120px;
+    animation: grid-move 20s linear infinite;
+    opacity: 0.3;
+  }
+
+  @keyframes grid-move {
+    0% {
+      transform: translateX(0) translateY(0);
+    }
+    100% {
+      transform: translateX(120px) translateY(120px);
+    }
+  }
+
   /* Particles container */
   .particles {
     position: absolute;
@@ -254,11 +273,10 @@
 
   .particle {
     position: absolute;
-    width: 4px;
-    height: 4px;
     background: hsl(217 91% 60% / 0.6);
     border-radius: 50%;
     animation: particle-float 15s ease-in-out infinite;
+    box-shadow: 0 0 6px hsl(217 91% 60% / 0.4);
   }
 
   @keyframes particle-float {
@@ -276,6 +294,40 @@
       transform: translateY(-100vh) translateX(50px);
       opacity: 0;
     }
+  }
+
+  /* Shooting star effect */
+  .shooting-stars {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .shooting-star {
+    position: absolute;
+    width: 100px;
+    height: 1px;
+    background: linear-gradient(90deg, hsl(217 91% 60% / 0.8), transparent);
+    transform: rotate(-45deg);
+  }
+
+  .shooting-star::before {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: hsl(217 91% 80%);
+    border-radius: 50%;
+    left: 0;
+    top: -2.5px;
+    box-shadow: 0 0 10px hsl(217 91% 60%), 0 0 20px hsl(217 91% 60% / 0.5);
+  }
+
+  /* Noise texture */
+  .noise-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
   }
 }
 
