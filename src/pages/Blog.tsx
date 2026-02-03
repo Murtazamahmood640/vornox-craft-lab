@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
 import { Calendar, Clock, User, Search, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ScrollReveal, StaggerContainer, StaggerItem, Float3D, Magnetic } from "@/components/ui/ScrollAnimations";
+import { UiverseCard } from "@/components/ui/UiverseCard";
+import { useState } from "react";
 
 const blogPosts = [
   {
@@ -70,120 +74,174 @@ const blogPosts = [
 const categories = ["All", "Design", "Development", "SEO", "Marketing"];
 
 export default function Blog() {
+  const [activeCategory, setActiveCategory] = useState("All");
+
+  const filteredPosts = activeCategory === "All" 
+    ? blogPosts 
+    : blogPosts.filter(post => post.category === activeCategory);
+
   return (
     <Layout>
       {/* Hero Section */}
       <section className="py-20 relative overflow-hidden">
         <div className="absolute inset-0 gradient-subtle-bg" />
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute inset-0 grid-pattern opacity-20" />
+        <motion.div 
+          className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 8, repeat: Infinity }}
+        />
+        <motion.div 
+          className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-cyan-400/10 rounded-full blur-3xl"
+          animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
+          transition={{ duration: 10, repeat: Infinity }}
+        />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="font-display text-5xl md:text-6xl font-bold mb-6">
-              Our <span className="gradient-text">Blog</span>
-            </h1>
-            <p className="text-xl text-muted-foreground mb-10">
+            <motion.h1 
+              className="font-display text-5xl md:text-6xl font-bold mb-6"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              Our <span className="gradient-text text-glow">Blog</span>
+            </motion.h1>
+            <motion.p 
+              className="text-xl text-muted-foreground mb-10"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
               Insights, tutorials, and industry trends from our team of experts. Stay ahead with the latest in technology and design.
-            </p>
+            </motion.p>
             
             {/* Search */}
-            <div className="max-w-md mx-auto relative">
+            <motion.div 
+              className="max-w-md mx-auto relative"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input 
                 placeholder="Search articles..." 
                 className="pl-12 h-14 bg-card border-border text-lg"
               />
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Categories */}
-      <section className="py-8 border-b border-border">
+      <section className="py-8 border-b border-border sticky top-16 lg:top-20 bg-background/95 backdrop-blur-sm z-40">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap gap-3 justify-center">
+          <motion.div 
+            className="flex flex-wrap gap-3 justify-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             {categories.map((category, index) => (
-              <Button
+              <motion.div
                 key={category}
-                variant={index === 0 ? "default" : "outline"}
-                className={index === 0 ? "gradient-bg" : "border-primary/50 hover:bg-primary/10"}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
               >
-                {category}
-              </Button>
+                <Button
+                  onClick={() => setActiveCategory(category)}
+                  variant={activeCategory === category ? "default" : "outline"}
+                  className={activeCategory === category ? "gradient-bg shadow-glow" : "border-primary/50 hover:bg-primary/10"}
+                  data-cursor="Filter"
+                >
+                  {category}
+                </Button>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Blog Grid */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts.map((post, index) => (
-              <Link
-                key={post.id}
-                to={`/blog/${post.id}`}
-                className="group rounded-2xl overflow-hidden bg-card border border-border hover:border-primary/50 transition-all duration-500 hover:shadow-brand-xl animate-fade-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                {/* Image */}
-                <div className="relative overflow-hidden aspect-[16/10]">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 rounded-full bg-primary/90 text-primary-foreground text-sm font-medium">
-                      {post.category}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent opacity-60" />
-                </div>
-                
-                {/* Content */}
-                <div className="p-6">
-                  <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
-                    <span className="flex items-center gap-1.5">
-                      <Calendar className="w-4 h-4" />
-                      {post.date}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <Clock className="w-4 h-4" />
-                      {post.readTime}
-                    </span>
-                  </div>
-                  
-                  <h3 className="font-display text-xl font-semibold mb-3 group-hover:text-primary transition-colors line-clamp-2">
-                    {post.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed mb-4 line-clamp-2">
-                    {post.excerpt}
-                  </p>
-                  
-                  {/* Author */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <User className="w-4 h-4" />
-                      {post.author}
-                    </div>
-                    <span className="text-primary flex items-center gap-1 text-sm font-medium group-hover:gap-2 transition-all">
-                      Read More
-                      <ArrowRight className="w-4 h-4" />
-                    </span>
-                  </div>
-                </div>
-              </Link>
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" staggerDelay={0.1}>
+            {filteredPosts.map((post) => (
+              <StaggerItem key={post.id}>
+                <Float3D intensity={0.4}>
+                  <Link
+                    to={`/blog/${post.id}`}
+                    data-cursor="Read"
+                  >
+                    <UiverseCard className="overflow-hidden">
+                      {/* Image */}
+                      <div className="relative overflow-hidden aspect-[16/10]">
+                        <motion.img
+                          src={post.image}
+                          alt={post.title}
+                          className="w-full h-full object-cover"
+                          whileHover={{ scale: 1.1 }}
+                          transition={{ duration: 0.5 }}
+                        />
+                        <div className="absolute top-4 left-4">
+                          <span className="px-3 py-1 rounded-full bg-primary/90 text-primary-foreground text-sm font-medium shadow-glow">
+                            {post.category}
+                          </span>
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent opacity-60" />
+                      </div>
+                      
+                      {/* Content */}
+                      <div className="p-6">
+                        <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
+                          <span className="flex items-center gap-1.5">
+                            <Calendar className="w-4 h-4" />
+                            {post.date}
+                          </span>
+                          <span className="flex items-center gap-1.5">
+                            <Clock className="w-4 h-4" />
+                            {post.readTime}
+                          </span>
+                        </div>
+                        
+                        <h3 className="font-display text-xl font-semibold mb-3 group-hover:text-primary transition-colors line-clamp-2">
+                          {post.title}
+                        </h3>
+                        <p className="text-muted-foreground leading-relaxed mb-4 line-clamp-2">
+                          {post.excerpt}
+                        </p>
+                        
+                        {/* Author */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <User className="w-4 h-4" />
+                            {post.author}
+                          </div>
+                          <span className="text-primary flex items-center gap-1 text-sm font-medium">
+                            Read More
+                            <ArrowRight className="w-4 h-4" />
+                          </span>
+                        </div>
+                      </div>
+                    </UiverseCard>
+                  </Link>
+                </Float3D>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
 
           {/* Load More */}
-          <div className="text-center mt-12">
-            <Button size="lg" variant="outline" className="border-primary/50 hover:bg-primary/10">
-              Load More Articles
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </div>
+          <ScrollReveal>
+            <div className="text-center mt-12">
+              <Magnetic>
+                <Button size="lg" variant="outline" className="border-primary/50 hover:bg-primary/10 hover:shadow-glow transition-all" data-cursor="Load">
+                  Load More Articles
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Magnetic>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
     </Layout>
