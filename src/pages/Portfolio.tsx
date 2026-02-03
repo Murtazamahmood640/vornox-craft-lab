@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { ExternalLink, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { ScrollReveal, StaggerContainer, StaggerItem, Float3D, Magnetic } from "@/components/ui/ScrollAnimations";
+import { UiverseCard } from "@/components/ui/UiverseCard";
 
 const categories = ["All", "Corporate", "Real Estate", "E-Commerce", "SaaS", "Portfolio", "Other"];
 
@@ -147,16 +150,36 @@ export default function Portfolio() {
       {/* Hero Section */}
       <section className="relative py-24 overflow-hidden">
         <div className="absolute inset-0 gradient-subtle-bg" />
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute inset-0 grid-pattern opacity-20" />
+        <motion.div 
+          className="absolute top-0 left-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 8, repeat: Infinity }}
+        />
+        <motion.div 
+          className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-cyan-400/10 rounded-full blur-3xl"
+          animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
+          transition={{ duration: 10, repeat: Infinity }}
+        />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="font-display text-5xl md:text-6xl font-bold mb-6">
-              Our <span className="gradient-text">Portfolio</span>
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <motion.h1 
+              className="font-display text-5xl md:text-6xl font-bold mb-6"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              Our <span className="gradient-text text-glow">Portfolio</span>
+            </motion.h1>
+            <motion.p 
+              className="text-xl text-muted-foreground max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
               Explore our collection of successful projects across various industries and technologies.
-            </p>
+            </motion.p>
           </div>
         </div>
       </section>
@@ -164,78 +187,114 @@ export default function Portfolio() {
       {/* Filter */}
       <section className="py-8 border-b border-border sticky top-16 lg:top-20 bg-background/95 backdrop-blur-sm z-40">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-2">
-            {categories.map((category) => (
-              <button
+          <motion.div 
+            className="flex flex-wrap justify-center gap-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {categories.map((category, index) => (
+              <motion.button
                 key={category}
                 onClick={() => setActiveCategory(category)}
                 className={`px-5 py-2.5 rounded-full font-medium transition-all ${
                   activeCategory === category
-                    ? "gradient-bg text-primary-foreground shadow-brand-md"
+                    ? "gradient-bg text-primary-foreground shadow-glow"
                     : "bg-muted text-muted-foreground hover:bg-muted/80"
                 }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                data-cursor="Filter"
               >
                 {category}
-              </button>
+              </motion.button>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Projects Grid */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" staggerDelay={0.08}>
             {filteredProjects.map((project, index) => (
-              <a
-                key={index}
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/50 hover:shadow-brand-xl transition-all duration-300"
-              >
-                <div className="relative aspect-[3/2] overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-end p-4">
-                    <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center">
-                      <ExternalLink className="w-5 h-5 text-primary" />
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <div className="text-sm text-primary font-medium mb-2">{project.category}</div>
-                  <h3 className="font-display text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-muted-foreground text-sm">{project.description}</p>
-                </div>
-              </a>
+              <StaggerItem key={index}>
+                <Float3D intensity={0.4}>
+                  <a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-cursor="Visit"
+                  >
+                    <UiverseCard className="overflow-hidden">
+                      <div className="relative aspect-[3/2] overflow-hidden">
+                        <motion.img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-full h-full object-cover"
+                          whileHover={{ scale: 1.1 }}
+                          transition={{ duration: 0.5 }}
+                        />
+                        <motion.div 
+                          className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-60"
+                          whileHover={{ opacity: 80 }}
+                        />
+                        <motion.div 
+                          className="absolute inset-0 flex items-end justify-end p-4 opacity-0"
+                          whileHover={{ opacity: 1 }}
+                        >
+                          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-glow">
+                            <ExternalLink className="w-5 h-5 text-primary-foreground" />
+                          </div>
+                        </motion.div>
+                      </div>
+                      <div className="p-6">
+                        <div className="text-sm text-primary font-medium mb-2">{project.category}</div>
+                        <h3 className="font-display text-xl font-semibold mb-2">
+                          {project.title}
+                        </h3>
+                        <p className="text-muted-foreground text-sm">{project.description}</p>
+                      </div>
+                    </UiverseCard>
+                  </a>
+                </Float3D>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 gradient-dark-bg">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6">
-              Like What You See?
-            </h2>
-            <p className="text-xl text-purple-200/80 mb-10">
-              Let's create something amazing together. Your project could be next in our portfolio.
-            </p>
-            <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6">
-              <Link to="/contact">
-                Start Your Project
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Link>
-            </Button>
-          </div>
+      <section className="py-24 gradient-dark-bg relative overflow-hidden">
+        <div className="absolute inset-0 grid-pattern opacity-10" />
+        <motion.div 
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
+          transition={{ duration: 6, repeat: Infinity }}
+        />
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <ScrollReveal>
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-6">
+                Like What You See?
+              </h2>
+              <p className="text-xl text-muted-foreground mb-10">
+                Let's create something amazing together. Your project could be next in our portfolio.
+              </p>
+              <Magnetic>
+                <Button asChild size="lg" className="gradient-bg text-primary-foreground text-lg px-8 py-6 shadow-glow hover:shadow-glow-lg transition-all">
+                  <Link to="/contact" data-cursor="Start">
+                    Start Your Project
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Link>
+                </Button>
+              </Magnetic>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
     </Layout>

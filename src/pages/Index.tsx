@@ -8,7 +8,6 @@ import { Testimonials } from "@/components/home/Testimonials";
 import { BlogPreview } from "@/components/home/BlogPreview";
 import { ServicesShowcase } from "@/components/home/ServicesShowcase";
 import { FeaturesShowcase } from "@/components/home/FeaturesShowcase";
-import { AnimatedCursor } from "@/components/ui/AnimatedCursor";
 import { ScrollReveal, Magnetic, Float3D, StaggerContainer, StaggerItem } from "@/components/ui/ScrollAnimations";
 import { UiverseCard } from "@/components/ui/UiverseCard";
 
@@ -29,8 +28,6 @@ const portfolioItems = [
 export default function Index() {
   return (
     <Layout>
-      <AnimatedCursor />
-      
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
         <HeroBackground />
