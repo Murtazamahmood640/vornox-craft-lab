@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import logo from "@/assets/logo.png";
 
 const services = [
   { name: "Websites", href: "/services/websites", icon: Globe },
@@ -40,13 +41,8 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg gradient-bg flex items-center justify-center">
-              <span className="text-primary-foreground font-display font-bold text-xl">V</span>
-            </div>
-            <span className="font-display font-bold text-xl text-foreground">
-              Vornox<span className="gradient-text">Lab</span>
-            </span>
+          <Link to="/" className="flex items-center">
+            <img src={logo} alt="Vornox Lab" className="h-10 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}

@@ -170,10 +170,10 @@ export default function Blog() {
             {filteredPosts.map((post) => (
               <StaggerItem key={post.id}>
                 <Float3D intensity={0.4}>
-                  <Link
-                    to={`/blog/${post.id}`}
-                    data-cursor="Read"
-                  >
+                    <div
+                      data-cursor="Read"
+                      className="cursor-pointer"
+                    >
                     <UiverseCard className="overflow-hidden">
                       {/* Image */}
                       <div className="relative overflow-hidden aspect-[16/10]">
@@ -225,7 +225,8 @@ export default function Blog() {
                         </div>
                       </div>
                     </UiverseCard>
-                  </Link>
+                    </div>
+                  
                 </Float3D>
               </StaggerItem>
             ))}

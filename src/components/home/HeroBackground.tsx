@@ -41,17 +41,37 @@ export function HeroBackground() {
 
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {/* Multi-layer animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-background" />
+      {/* Multi-layer animated gradient background - vibrant gradient base */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[hsl(230,25%,8%)] via-[hsl(220,40%,12%)] to-[hsl(260,30%,10%)]" />
       
-      {/* Primary gradient layer */}
+      {/* Animated flowing gradient overlay */}
       <motion.div
         className="absolute inset-0"
         style={{
           background: `
-            radial-gradient(ellipse 80% 50% at 20% 40%, hsl(217 91% 60% / 0.15) 0%, transparent 50%),
-            radial-gradient(ellipse 60% 40% at 80% 60%, hsl(224 76% 48% / 0.12) 0%, transparent 50%),
-            radial-gradient(ellipse 50% 30% at 50% 80%, hsl(189 94% 43% / 0.1) 0%, transparent 50%)
+            linear-gradient(135deg, 
+              hsl(217 91% 60% / 0.25) 0%, 
+              hsl(260 70% 50% / 0.15) 25%,
+              hsl(280 60% 45% / 0.12) 50%,
+              hsl(200 80% 50% / 0.18) 75%,
+              hsl(217 91% 60% / 0.2) 100%
+            )
+          `,
+        }}
+        animate={{
+          opacity: [0.6, 0.9, 0.6],
+        }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+      />
+      
+      {/* Primary gradient layer with radial effects */}
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          background: `
+            radial-gradient(ellipse 80% 50% at 20% 40%, hsl(217 91% 60% / 0.2) 0%, transparent 50%),
+            radial-gradient(ellipse 60% 40% at 80% 60%, hsl(260 76% 55% / 0.18) 0%, transparent 50%),
+            radial-gradient(ellipse 50% 30% at 50% 80%, hsl(189 94% 43% / 0.15) 0%, transparent 50%)
           `,
         }}
         animate={{
