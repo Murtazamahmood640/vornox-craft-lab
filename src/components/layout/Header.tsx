@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X, ChevronDown, Globe, AppWindow, Megaphone, Search, PenTool, Palette, Monitor, CloudCog } from "lucide-react";
+import { Menu, X, ChevronDown, Globe, AppWindow, Megaphone, Search, PenTool, Palette, Monitor, CloudCog, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,6 +19,7 @@ const services = [
   { name: "Graphic Design", href: "/services/graphic-design", icon: Palette },
   { name: "IT Consulting", href: "/services/it-consulting", icon: Monitor },
   { name: "SaaS Development", href: "/services/saas", icon: CloudCog },
+  { name: "Recruitment", href: "/services/recruitment", icon: Users },
 ];
 
 const navLinks = [
