@@ -9,7 +9,7 @@ export function AnimatedCursor() {
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
-  const springConfig = { damping: 25, stiffness: 400 };
+  const springConfig = { damping: 15, stiffness: 800 };
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
@@ -85,10 +85,10 @@ export function AnimatedCursor() {
         <motion.div
           className="bg-white rounded-full"
           animate={{
-            width: isHovering ? 60 : isClicking ? 8 : 12,
-            height: isHovering ? 60 : isClicking ? 8 : 12,
+            width: isHovering ? 24 : isClicking ? 6 : 10,
+            height: isHovering ? 24 : isClicking ? 6 : 10,
           }}
-          transition={{ type: "spring", damping: 20, stiffness: 300 }}
+          transition={{ type: "spring", damping: 25, stiffness: 500 }}
         />
       </motion.div>
 
@@ -103,13 +103,13 @@ export function AnimatedCursor() {
         }}
       >
         <motion.div
-          className="border-2 border-primary/50 rounded-full flex items-center justify-center"
+          className="border border-primary/40 rounded-full flex items-center justify-center"
           animate={{
-            width: isHovering ? 80 : 40,
-            height: isHovering ? 80 : 40,
+            width: isHovering ? 40 : 28,
+            height: isHovering ? 40 : 28,
             opacity: isClicking ? 0.5 : 1,
           }}
-          transition={{ type: "spring", damping: 20, stiffness: 200 }}
+          transition={{ type: "spring", damping: 25, stiffness: 400 }}
         >
           {cursorText && (
             <motion.span
