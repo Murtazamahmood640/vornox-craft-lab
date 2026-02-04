@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Clock, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Send, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,14 +13,20 @@ const contactInfo = [
   {
     icon: Mail,
     title: "Email Us",
-    details: "hello@vornoxlab.com",
-    href: "mailto:hello@vornoxlab.com",
+    details: "info@vornoxlab.com",
+    href: "mailto:info@vornoxlab.com",
   },
   {
     icon: Phone,
     title: "Call Us",
-    details: "+1 (234) 567-890",
-    href: "tel:+1234567890",
+    details: "03228258640",
+    href: "tel:03228258640",
+  },
+  {
+    icon: MessageCircle,
+    title: "WhatsApp",
+    details: "03228258640",
+    href: "https://wa.me/923228258640",
   },
   {
     icon: MapPin,
@@ -39,6 +45,18 @@ const contactInfo = [
 export default function Contact() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+    service: "",
+    message: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +67,14 @@ export default function Contact() {
       toast({
         title: "Message Sent!",
         description: "We'll get back to you within 24 hours.",
+      });
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        company: "",
+        service: "",
+        message: "",
       });
     }, 1000);
   };
@@ -112,6 +138,8 @@ export default function Contact() {
                       <Float3D intensity={0.3}>
                         <a
                           href={item.href}
+                          target={item.href.startsWith("http") ? "_blank" : undefined}
+                          rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
                           className="flex items-start gap-4 p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all group"
                           data-cursor="Click"
                         >
@@ -136,110 +164,114 @@ export default function Contact() {
 
             {/* Contact Form */}
             <ScrollReveal delay={0.2}>
-              <Float3D intensity={0.2}>
-                <UiverseCard className="p-8 md:p-10">
-                  <h2 className="font-display text-2xl font-bold mb-6">Send Us a Message</h2>
-                  
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 }}
-                      >
-                        <label className="block text-sm font-medium mb-2">Full Name</label>
-                        <Input placeholder="John Doe" required className="h-12" />
-                      </motion.div>
-                      <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.4 }}
-                      >
-                        <label className="block text-sm font-medium mb-2">Email Address</label>
-                        <Input type="email" placeholder="john@example.com" required className="h-12" />
-                      </motion.div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.5 }}
-                      >
-                        <label className="block text-sm font-medium mb-2">Phone Number</label>
-                        <Input type="tel" placeholder="+1 (234) 567-890" className="h-12" />
-                      </motion.div>
-                      <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.6 }}
-                      >
-                        <label className="block text-sm font-medium mb-2">Company Name</label>
-                        <Input placeholder="Your Company" className="h-12" />
-                      </motion.div>
-                    </div>
-
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.7 }}
-                    >
-                      <label className="block text-sm font-medium mb-2">Service Interested In</label>
-                      <select className="w-full h-12 px-4 rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
-                        <option value="">Select a service</option>
-                        <option value="websites">Websites</option>
-                        <option value="web-applications">Web Applications</option>
-                        <option value="digital-marketing">Digital Marketing</option>
-                        <option value="seo">SEO</option>
-                        <option value="content-writing">Content Writing</option>
-                        <option value="graphic-design">Graphic Design</option>
-                        <option value="it-consulting">IT Consulting</option>
-                        <option value="saas">SaaS Development</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </motion.div>
-
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.8 }}
-                    >
-                      <label className="block text-sm font-medium mb-2">Your Message</label>
-                      <Textarea
-                        placeholder="Tell us about your project..."
-                        rows={5}
-                        required
-                        className="resize-none"
+              <UiverseCard className="p-8 md:p-10">
+                <h2 className="font-display text-2xl font-bold mb-6">Send Us a Message</h2>
+                
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Full Name</label>
+                      <Input 
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="John Doe" 
+                        required 
+                        className="h-12" 
                       />
-                    </motion.div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Email Address</label>
+                      <Input 
+                        name="email"
+                        type="email" 
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="john@example.com" 
+                        required 
+                        className="h-12" 
+                      />
+                    </div>
+                  </div>
 
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.9 }}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Phone Number</label>
+                      <Input 
+                        name="phone"
+                        type="tel" 
+                        value={formData.phone}
+                        onChange={handleChange}
+                        placeholder="+1 (234) 567-890" 
+                        className="h-12" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Company Name</label>
+                      <Input 
+                        name="company"
+                        value={formData.company}
+                        onChange={handleChange}
+                        placeholder="Your Company" 
+                        className="h-12" 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Service Interested In</label>
+                    <select 
+                      name="service"
+                      value={formData.service}
+                      onChange={handleChange}
+                      className="w-full h-12 px-4 rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     >
-                      <Magnetic>
-                        <Button
-                          type="submit"
-                          size="lg"
-                          disabled={isSubmitting}
-                          className="w-full gradient-bg text-primary-foreground text-lg py-6 shadow-glow hover:shadow-glow-lg transition-all"
-                          data-cursor="Send"
-                        >
-                          {isSubmitting ? (
-                            "Sending..."
-                          ) : (
-                            <>
-                              Send Message
-                              <Send className="ml-2 w-5 h-5" />
-                            </>
-                          )}
-                        </Button>
-                      </Magnetic>
-                    </motion.div>
-                  </form>
-                </UiverseCard>
-              </Float3D>
+                      <option value="">Select a service</option>
+                      <option value="websites">Websites</option>
+                      <option value="web-applications">Web Applications</option>
+                      <option value="digital-marketing">Digital Marketing</option>
+                      <option value="seo">SEO</option>
+                      <option value="content-writing">Content Writing</option>
+                      <option value="graphic-design">Graphic Design</option>
+                      <option value="it-consulting">IT Consulting</option>
+                      <option value="saas">SaaS Development</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Your Message</label>
+                    <Textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      placeholder="Tell us about your project..."
+                      rows={5}
+                      required
+                      className="resize-none"
+                    />
+                  </div>
+
+                  <Magnetic>
+                    <Button
+                      type="submit"
+                      size="lg"
+                      disabled={isSubmitting}
+                      className="w-full gradient-bg text-primary-foreground text-lg py-6 shadow-glow hover:shadow-glow-lg transition-all"
+                      data-cursor="Send"
+                    >
+                      {isSubmitting ? (
+                        "Sending..."
+                      ) : (
+                        <>
+                          Send Message
+                          <Send className="ml-2 w-5 h-5" />
+                        </>
+                      )}
+                    </Button>
+                  </Magnetic>
+                </form>
+              </UiverseCard>
             </ScrollReveal>
           </div>
         </div>

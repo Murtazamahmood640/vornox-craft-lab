@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-import { Calendar, Clock, User, Search, ArrowRight } from "lucide-react";
+import { Calendar, Clock, User, Search, ArrowRight, Share2, Phone, Mail, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { Input } from "@/components/ui/input";
@@ -7,6 +6,12 @@ import { Button } from "@/components/ui/button";
 import { ScrollReveal, StaggerContainer, StaggerItem, Float3D, Magnetic } from "@/components/ui/ScrollAnimations";
 import { UiverseCard } from "@/components/ui/UiverseCard";
 import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const blogPosts = [
   {
@@ -79,6 +84,23 @@ export default function Blog() {
   const filteredPosts = activeCategory === "All" 
     ? blogPosts 
     : blogPosts.filter(post => post.category === activeCategory);
+
+  const handleShare = (platform: string, post: typeof blogPosts[0]) => {
+    const url = window.location.href;
+    const text = `Check out: ${post.title}`;
+    
+    switch (platform) {
+      case "whatsapp":
+        window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, "_blank");
+        break;
+      case "phone":
+        window.open("tel:03228258640");
+        break;
+      case "email":
+        window.open(`mailto:info@vornoxlab.com?subject=${encodeURIComponent(post.title)}&body=${encodeURIComponent(text + "\n\n" + url)}`);
+        break;
+    }
+  };
 
   return (
     <Layout>
@@ -170,63 +192,86 @@ export default function Blog() {
             {filteredPosts.map((post) => (
               <StaggerItem key={post.id}>
                 <Float3D intensity={0.4}>
-                    <div
-                      data-cursor="Read"
-                      className="cursor-pointer"
-                    >
-                    <UiverseCard className="overflow-hidden">
-                      {/* Image */}
-                      <div className="relative overflow-hidden aspect-[16/10]">
-                        <motion.img
-                          src={post.image}
-                          alt={post.title}
-                          className="w-full h-full object-cover"
-                          whileHover={{ scale: 1.1 }}
-                          transition={{ duration: 0.5 }}
-                        />
-                        <div className="absolute top-4 left-4">
-                          <span className="px-3 py-1 rounded-full bg-primary/90 text-primary-foreground text-sm font-medium shadow-glow">
-                            {post.category}
-                          </span>
-                        </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent opacity-60" />
+                  <UiverseCard className="overflow-hidden">
+                    {/* Image */}
+                    <div className="relative overflow-hidden aspect-[16/10]">
+                      <motion.img
+                        src={post.image}
+                        alt={post.title}
+                        className="w-full h-full object-cover"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.5 }}
+                      />
+                      <div className="absolute top-4 left-4">
+                        <span className="px-3 py-1 rounded-full bg-primary/90 text-primary-foreground text-sm font-medium shadow-glow">
+                          {post.category}
+                        </span>
+                      </div>
+                      {/* Share Button */}
+                      <div className="absolute top-4 right-4">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant="secondary"
+                              className="w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background"
+                              data-cursor="Share"
+                            >
+                              <Share2 className="w-4 h-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="bg-popover border border-border">
+                            <DropdownMenuItem onClick={() => handleShare("whatsapp", post)} className="cursor-pointer">
+                              <MessageCircle className="w-4 h-4 mr-2 text-green-500" />
+                              Share on WhatsApp
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleShare("phone", post)} className="cursor-pointer">
+                              <Phone className="w-4 h-4 mr-2 text-primary" />
+                              Call Us: 03228258640
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleShare("email", post)} className="cursor-pointer">
+                              <Mail className="w-4 h-4 mr-2 text-primary" />
+                              Email: info@vornoxlab.com
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent opacity-60" />
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="p-6">
+                      <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
+                        <span className="flex items-center gap-1.5">
+                          <Calendar className="w-4 h-4" />
+                          {post.date}
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="w-4 h-4" />
+                          {post.readTime}
+                        </span>
                       </div>
                       
-                      {/* Content */}
-                      <div className="p-6">
-                        <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
-                          <span className="flex items-center gap-1.5">
-                            <Calendar className="w-4 h-4" />
-                            {post.date}
-                          </span>
-                          <span className="flex items-center gap-1.5">
-                            <Clock className="w-4 h-4" />
-                            {post.readTime}
-                          </span>
+                      <h3 className="font-display text-xl font-semibold mb-3 group-hover:text-primary transition-colors line-clamp-2">
+                        {post.title}
+                      </h3>
+                      <p className="text-muted-foreground leading-relaxed mb-4 line-clamp-2">
+                        {post.excerpt}
+                      </p>
+                      
+                      {/* Author */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <User className="w-4 h-4" />
+                          {post.author}
                         </div>
-                        
-                        <h3 className="font-display text-xl font-semibold mb-3 group-hover:text-primary transition-colors line-clamp-2">
-                          {post.title}
-                        </h3>
-                        <p className="text-muted-foreground leading-relaxed mb-4 line-clamp-2">
-                          {post.excerpt}
-                        </p>
-                        
-                        {/* Author */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <User className="w-4 h-4" />
-                            {post.author}
-                          </div>
-                          <span className="text-primary flex items-center gap-1 text-sm font-medium">
-                            Read More
-                            <ArrowRight className="w-4 h-4" />
-                          </span>
-                        </div>
+                        <span className="text-primary flex items-center gap-1 text-sm font-medium">
+                          Read More
+                          <ArrowRight className="w-4 h-4" />
+                        </span>
                       </div>
-                    </UiverseCard>
                     </div>
-                  
+                  </UiverseCard>
                 </Float3D>
               </StaggerItem>
             ))}
