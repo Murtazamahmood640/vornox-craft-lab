@@ -134,29 +134,92 @@ export default function Index() {
               </motion.div>
             </div>
 
-            {/* Right: Service Cards Grid */}
-            <motion.div
-              className="hidden lg:grid grid-cols-3 gap-4"
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-            >
-              {heroServices.map((service, i) => (
+            {/* Right: Animated Floating Icons */}
+            <div className="hidden lg:block relative h-[500px]">
+              {/* Central glowing orb */}
+              <motion.div
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-primary/10 blur-3xl"
+                animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              />
+
+              {/* Orbiting icons */}
+              {heroServices.map((service, i) => {
+                const angle = (i / heroServices.length) * 360;
+                const radius = 180;
+                const x = Math.cos((angle * Math.PI) / 180) * radius;
+                const y = Math.sin((angle * Math.PI) / 180) * radius;
+                const floatDelay = i * 0.8;
+                const floatDuration = 5 + i * 0.5;
+
+                return (
+                  <motion.div
+                    key={service.label}
+                    className="absolute top-1/2 left-1/2"
+                    style={{ x: x - 32, y: y - 32 }}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5 + i * 0.15, type: "spring", stiffness: 200 }}
+                  >
+                    <motion.div
+                      className="w-16 h-16 rounded-2xl bg-card/80 border border-border/60 backdrop-blur-md flex items-center justify-center shadow-lg hover:border-primary/50 hover:shadow-glow transition-all duration-300 cursor-default group"
+                      animate={{
+                        y: [0, -12, 0],
+                        rotate: [0, 5, -5, 0],
+                      }}
+                      transition={{
+                        duration: floatDuration,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: floatDelay,
+                      }}
+                      whileHover={{ scale: 1.2 }}
+                    >
+                      <service.icon className="w-7 h-7 text-primary group-hover:scale-110 transition-transform" />
+                    </motion.div>
+                    <motion.span
+                      className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-muted-foreground font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity"
+                      initial={{ opacity: 0 }}
+                    >
+                      {service.label}
+                    </motion.span>
+                  </motion.div>
+                );
+              })}
+
+              {/* Connecting lines / orbit ring */}
+              <motion.div
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[360px] h-[360px] rounded-full border border-primary/10"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+              />
+              <motion.div
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] rounded-full border border-primary/5"
+                animate={{ rotate: -360 }}
+                transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
+              />
+
+              {/* Floating particles around icons */}
+              {[...Array(8)].map((_, i) => (
                 <motion.div
-                  key={service.label}
-                  className="flex flex-col items-center gap-3 p-6 rounded-2xl bg-card/50 border border-border/50 backdrop-blur-sm hover:border-primary/40 hover:bg-card/80 transition-all duration-300"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 + i * 0.1 }}
-                  whileHover={{ y: -5, scale: 1.02 }}
-                >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <service.icon className="w-6 h-6 text-primary" />
-                  </div>
-                  <span className="text-sm font-medium text-foreground">{service.label}</span>
-                </motion.div>
+                  key={`particle-${i}`}
+                  className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full bg-primary/30"
+                  style={{
+                    x: Math.cos((i * 45 * Math.PI) / 180) * (120 + Math.random() * 80) - 4,
+                    y: Math.sin((i * 45 * Math.PI) / 180) * (120 + Math.random() * 80) - 4,
+                  }}
+                  animate={{
+                    opacity: [0.2, 0.8, 0.2],
+                    scale: [1, 1.5, 1],
+                  }}
+                  transition={{
+                    duration: 3 + Math.random() * 2,
+                    repeat: Infinity,
+                    delay: i * 0.4,
+                  }}
+                />
               ))}
-            </motion.div>
+            </div>
           </div>
         </div>
 
