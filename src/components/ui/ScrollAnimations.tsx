@@ -1,23 +1,30 @@
 import { ReactNode, useRef } from "react";
 import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion";
 
+// Hook to detect mobile
+function useIsMobile() {
+  if (typeof window === "undefined") return false;
+  return window.innerWidth < 768;
+}
+
 interface ScrollRevealProps {
   children: ReactNode;
   className?: string;
   delay?: number;
 }
 
-// Fade up on scroll
+// Fade up on scroll - simple fade on mobile
 export function ScrollReveal({ children, className = "", delay = 0 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const isMobile = useIsMobile();
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ duration: 0.6, delay, ease: "easeOut" }}
+      initial={{ opacity: 0, y: isMobile ? 20 : 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? 20 : 50 }}
+      transition={{ duration: isMobile ? 0.3 : 0.6, delay: isMobile ? 0 : delay, ease: "easeOut" }}
       className={className}
     >
       {children}
@@ -25,9 +32,11 @@ export function ScrollReveal({ children, className = "", delay = 0 }: ScrollReve
   );
 }
 
-// 3D Parallax container
+// 3D Parallax container - disabled on mobile
 export function Parallax3D({ children, className = "" }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
@@ -41,6 +50,10 @@ export function Parallax3D({ children, className = "" }: { children: ReactNode; 
   const springY = useSpring(y, { stiffness: 100, damping: 30 });
   const springRotateX = useSpring(rotateX, { stiffness: 100, damping: 30 });
   const springScale = useSpring(scale, { stiffness: 100, damping: 30 });
+
+  if (isMobile) {
+    return <div ref={ref} className={className}>{children}</div>;
+  }
 
   return (
     <motion.div
@@ -60,7 +73,7 @@ export function Parallax3D({ children, className = "" }: { children: ReactNode; 
   );
 }
 
-// Floating 3D element
+// Floating 3D element - disabled on mobile
 export function Float3D({ 
   children, 
   className = "", 
@@ -73,6 +86,8 @@ export function Float3D({
   rotationIntensity?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
@@ -85,6 +100,10 @@ export function Float3D({
   const springY = useSpring(y, { stiffness: 50, damping: 20 });
   const springRotateY = useSpring(rotateY, { stiffness: 50, damping: 20 });
   const springRotateZ = useSpring(rotateZ, { stiffness: 50, damping: 20 });
+
+  if (isMobile) {
+    return <div ref={ref} className={className}>{children}</div>;
+  }
 
   return (
     <motion.div
@@ -103,7 +122,7 @@ export function Float3D({
   );
 }
 
-// Stagger children animation
+// Stagger children animation - simpler on mobile
 export function StaggerContainer({ 
   children, 
   className = "",
@@ -115,6 +134,7 @@ export function StaggerContainer({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const isMobile = useIsMobile();
 
   return (
     <motion.div
@@ -125,7 +145,7 @@ export function StaggerContainer({
         hidden: {},
         visible: {
           transition: {
-            staggerChildren: staggerDelay,
+            staggerChildren: isMobile ? 0.05 : staggerDelay,
           },
         },
       }}
@@ -137,18 +157,20 @@ export function StaggerContainer({
 }
 
 export function StaggerItem({ children, className = "" }: { children: ReactNode; className?: string }) {
+  const isMobile = useIsMobile();
+
   return (
     <motion.div
       variants={{
-        hidden: { opacity: 0, y: 30, rotateX: -15 },
+        hidden: { opacity: 0, y: isMobile ? 10 : 30, ...(isMobile ? {} : { rotateX: -15 }) },
         visible: { 
           opacity: 1, 
           y: 0, 
           rotateX: 0,
-          transition: { duration: 0.5, ease: "easeOut" }
+          transition: { duration: isMobile ? 0.3 : 0.5, ease: "easeOut" }
         },
       }}
-      style={{ transformPerspective: 1000 }}
+      style={isMobile ? {} : { transformPerspective: 1000 }}
       className={className}
     >
       {children}
@@ -156,14 +178,24 @@ export function StaggerItem({ children, className = "" }: { children: ReactNode;
   );
 }
 
-// Horizontal scroll section
+// Horizontal scroll section - disabled on mobile
 export function HorizontalScroll({ children, className = "" }: { children: ReactNode; className?: string }) {
   const targetRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+
   const { scrollYProgress } = useScroll({
     target: targetRef,
   });
 
   const x = useTransform(scrollYProgress, [0, 1], ["0%", "-75%"]);
+
+  if (isMobile) {
+    return (
+      <div className={`flex gap-4 overflow-x-auto pb-4 ${className}`}>
+        {children}
+      </div>
+    );
+  }
 
   return (
     <section ref={targetRef} className="relative h-[300vh]">
@@ -176,10 +208,25 @@ export function HorizontalScroll({ children, className = "" }: { children: React
   );
 }
 
-// Text reveal animation
+// Text reveal animation - simple fade on mobile
 export function TextReveal({ text, className = "" }: { text: string; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <motion.div
+        ref={ref}
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : {}}
+        transition={{ duration: 0.3 }}
+        className={className}
+      >
+        {text}
+      </motion.div>
+    );
+  }
 
   const words = text.split(" ");
 
@@ -204,9 +251,11 @@ export function TextReveal({ text, className = "" }: { text: string; className?:
   );
 }
 
-// Scale on scroll
+// Scale on scroll - disabled on mobile
 export function ScaleOnScroll({ children, className = "" }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "center center"],
@@ -218,6 +267,10 @@ export function ScaleOnScroll({ children, className = "" }: { children: ReactNod
 
   const springScale = useSpring(scale, { stiffness: 100, damping: 30 });
   const springRotateX = useSpring(rotateX, { stiffness: 100, damping: 30 });
+
+  if (isMobile) {
+    return <div ref={ref} className={className}>{children}</div>;
+  }
 
   return (
     <motion.div
@@ -236,15 +289,16 @@ export function ScaleOnScroll({ children, className = "" }: { children: ReactNod
   );
 }
 
-// Magnetic element
+// Magnetic element - disabled on mobile
 export function Magnetic({ children, className = "" }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
   
   const x = useSpring(0, { stiffness: 150, damping: 15 });
   const y = useSpring(0, { stiffness: 150, damping: 15 });
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
+    if (!ref.current || isMobile) return;
     
     const rect = ref.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -258,6 +312,10 @@ export function Magnetic({ children, className = "" }: { children: ReactNode; cl
     x.set(0);
     y.set(0);
   };
+
+  if (isMobile) {
+    return <div ref={ref} className={className}>{children}</div>;
+  }
 
   return (
     <motion.div
