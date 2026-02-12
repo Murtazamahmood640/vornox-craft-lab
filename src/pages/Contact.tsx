@@ -6,8 +6,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Layout } from "@/components/layout/Layout";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { ScrollReveal, StaggerContainer, StaggerItem, Float3D, Magnetic } from "@/components/ui/ScrollAnimations";
-import { UiverseCard } from "@/components/ui/UiverseCard";
 
 const contactInfo = [
   {
@@ -85,16 +83,6 @@ export default function Contact() {
       <section className="relative py-24 overflow-hidden">
         <div className="absolute inset-0 gradient-subtle-bg" />
         <div className="absolute inset-0 grid-pattern opacity-20" />
-        <motion.div 
-          className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-3xl"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity }}
-        />
-        <motion.div 
-          className="absolute top-0 left-0 w-[400px] h-[400px] bg-cyan-400/10 rounded-full blur-3xl"
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 10, repeat: Infinity }}
-        />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
@@ -123,156 +111,141 @@ export default function Contact() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Contact Info */}
-            <ScrollReveal>
-              <div>
-                <h2 className="font-display text-3xl font-bold mb-8">
-                  Let's Start a Conversation
-                </h2>
-                <p className="text-muted-foreground text-lg mb-10">
-                  Whether you need a new website, want to revamp your digital presence, or have questions about our services, we're here to help.
-                </p>
+            <div>
+              <h2 className="font-display text-3xl font-bold mb-8">
+                Let's Start a Conversation
+              </h2>
+              <p className="text-muted-foreground text-lg mb-10">
+                Whether you need a new website, want to revamp your digital presence, or have questions about our services, we're here to help.
+              </p>
 
-                <StaggerContainer className="space-y-6" staggerDelay={0.1}>
-                  {contactInfo.map((item, index) => (
-                    <StaggerItem key={index}>
-                      <Float3D intensity={0.3}>
-                        <a
-                          href={item.href}
-                          target={item.href.startsWith("http") ? "_blank" : undefined}
-                          rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                          className="flex items-start gap-4 p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all group"
-                          data-cursor="Click"
-                        >
-                          <motion.div 
-                            className="w-12 h-12 rounded-lg gradient-bg flex items-center justify-center flex-shrink-0 shadow-glow"
-                            whileHover={{ scale: 1.1, rotate: 5 }}
-                            transition={{ type: "spring", stiffness: 300 }}
-                          >
-                            <item.icon className="w-6 h-6 text-primary-foreground" />
-                          </motion.div>
-                          <div>
-                            <h3 className="font-semibold mb-1">{item.title}</h3>
-                            <p className="text-muted-foreground">{item.details}</p>
-                          </div>
-                        </a>
-                      </Float3D>
-                    </StaggerItem>
-                  ))}
-                </StaggerContainer>
+              <div className="space-y-6">
+                {contactInfo.map((item, index) => (
+                  <a
+                    key={index}
+                    href={item.href}
+                    target={item.href.startsWith("http") ? "_blank" : undefined}
+                    rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    className="flex items-start gap-4 p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all group"
+                  >
+                    <div className="w-12 h-12 rounded-lg gradient-bg flex items-center justify-center flex-shrink-0 shadow-glow">
+                      <item.icon className="w-6 h-6 text-primary-foreground" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">{item.title}</h3>
+                      <p className="text-muted-foreground">{item.details}</p>
+                    </div>
+                  </a>
+                ))}
               </div>
-            </ScrollReveal>
+            </div>
 
-            {/* Contact Form */}
-            <ScrollReveal delay={0.2}>
-              <UiverseCard className="p-8 md:p-10">
-                <h2 className="font-display text-2xl font-bold mb-6">Send Us a Message</h2>
-                
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Full Name</label>
-                      <Input 
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        placeholder="John Doe" 
-                        required 
-                        className="h-12" 
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Email Address</label>
-                      <Input 
-                        name="email"
-                        type="email" 
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="john@example.com" 
-                        required 
-                        className="h-12" 
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Phone Number</label>
-                      <Input 
-                        name="phone"
-                        type="tel" 
-                        value={formData.phone}
-                        onChange={handleChange}
-                        placeholder="+1 (234) 567-890" 
-                        className="h-12" 
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Company Name</label>
-                      <Input 
-                        name="company"
-                        value={formData.company}
-                        onChange={handleChange}
-                        placeholder="Your Company" 
-                        className="h-12" 
-                      />
-                    </div>
-                  </div>
-
+            {/* Contact Form - No wrapper animations */}
+            <div className="p-8 md:p-10 rounded-2xl bg-card border border-border">
+              <h2 className="font-display text-2xl font-bold mb-6">Send Us a Message</h2>
+              
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Service Interested In</label>
-                    <select 
-                      name="service"
-                      value={formData.service}
+                    <label className="block text-sm font-medium mb-2">Full Name</label>
+                    <Input 
+                      name="name"
+                      value={formData.name}
                       onChange={handleChange}
-                      className="w-full h-12 px-4 rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                    >
-                      <option value="">Select a service</option>
-                      <option value="websites">Websites</option>
-                      <option value="web-applications">Web Applications</option>
-                      <option value="digital-marketing">Digital Marketing</option>
-                      <option value="seo">SEO</option>
-                      <option value="content-writing">Content Writing</option>
-                      <option value="graphic-design">Graphic Design</option>
-                      <option value="it-consulting">IT Consulting</option>
-                      <option value="saas">SaaS Development</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Your Message</label>
-                    <Textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      placeholder="Tell us about your project..."
-                      rows={5}
-                      required
-                      className="resize-none"
+                      placeholder="John Doe" 
+                      required 
+                      className="h-12" 
                     />
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Email Address</label>
+                    <Input 
+                      name="email"
+                      type="email" 
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="john@example.com" 
+                      required 
+                      className="h-12" 
+                    />
+                  </div>
+                </div>
 
-                  <Magnetic>
-                    <Button
-                      type="submit"
-                      size="lg"
-                      disabled={isSubmitting}
-                      className="w-full gradient-bg text-primary-foreground text-lg py-6 shadow-glow hover:shadow-glow-lg transition-all"
-                      data-cursor="Send"
-                    >
-                      {isSubmitting ? (
-                        "Sending..."
-                      ) : (
-                        <>
-                          Send Message
-                          <Send className="ml-2 w-5 h-5" />
-                        </>
-                      )}
-                    </Button>
-                  </Magnetic>
-                </form>
-              </UiverseCard>
-            </ScrollReveal>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Phone Number</label>
+                    <Input 
+                      name="phone"
+                      type="tel" 
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="+1 (234) 567-890" 
+                      className="h-12" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Company Name</label>
+                    <Input 
+                      name="company"
+                      value={formData.company}
+                      onChange={handleChange}
+                      placeholder="Your Company" 
+                      className="h-12" 
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Service Interested In</label>
+                  <select 
+                    name="service"
+                    value={formData.service}
+                    onChange={handleChange}
+                    className="w-full h-12 px-4 rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    <option value="">Select a service</option>
+                    <option value="websites">Websites</option>
+                    <option value="web-applications">Web Applications</option>
+                    <option value="digital-marketing">Digital Marketing</option>
+                    <option value="seo">SEO</option>
+                    <option value="content-writing">Content Writing</option>
+                    <option value="graphic-design">Graphic Design</option>
+                    <option value="it-consulting">IT Consulting</option>
+                    <option value="saas">SaaS Development</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Your Message</label>
+                  <Textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="Tell us about your project..."
+                    rows={5}
+                    required
+                    className="resize-none"
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={isSubmitting}
+                  className="w-full gradient-bg text-primary-foreground text-lg py-6 shadow-glow hover:shadow-glow-lg transition-all"
+                >
+                  {isSubmitting ? (
+                    "Sending..."
+                  ) : (
+                    <>
+                      Send Message
+                      <Send className="ml-2 w-5 h-5" />
+                    </>
+                  )}
+                </Button>
+              </form>
+            </div>
           </div>
         </div>
       </section>
@@ -281,26 +254,12 @@ export default function Contact() {
       <section className="py-16 gradient-subtle-bg relative overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-10" />
         <div className="container mx-auto px-4 relative z-10">
-          <ScrollReveal>
-            <Float3D intensity={0.2}>
-              <div className="rounded-3xl overflow-hidden shadow-glow h-[400px] bg-card border border-border flex items-center justify-center">
-                <motion.div 
-                  className="text-center"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <motion.div
-                    animate={{ y: [0, -10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <MapPin className="w-16 h-16 text-primary/50 mx-auto mb-4" />
-                  </motion.div>
-                  <p className="text-muted-foreground text-lg">Map integration coming soon</p>
-                </motion.div>
-              </div>
-            </Float3D>
-          </ScrollReveal>
+          <div className="rounded-3xl overflow-hidden shadow-glow h-[400px] bg-card border border-border flex items-center justify-center">
+            <div className="text-center">
+              <MapPin className="w-16 h-16 text-primary/50 mx-auto mb-4" />
+              <p className="text-muted-foreground text-lg">Map integration coming soon</p>
+            </div>
+          </div>
         </div>
       </section>
     </Layout>
