@@ -32,19 +32,21 @@ export default function Auth() {
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email: form.email,
           password: form.password,
         });
         if (error) throw error;
-        toast({ title: "Welcome back!", description: "You've been signed in successfully." });
-        navigate("/dashboard");
+        if (data.session) {
+          toast({ title: "Welcome back!", description: "You've been signed in successfully." });
+          navigate("/dashboard");
+        }
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: form.email,
           password: form.password,
           options: {
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: `${window.location.origin}/dashboard`,
             data: {
               full_name: form.fullName,
               phone: form.phone,
@@ -55,8 +57,9 @@ export default function Auth() {
         if (error) throw error;
         toast({
           title: "Account created!",
-          description: "Please check your email to verify your account before signing in.",
+          description: "You can now sign in with your credentials.",
         });
+        setIsLogin(true);
       }
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });

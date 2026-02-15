@@ -137,7 +137,7 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="lg:hidden py-4 border-t border-border/50 animate-fade-in">
+          <div className="lg:hidden py-4 border-t border-border/50 animate-fade-in max-h-[calc(100vh-4rem)] overflow-y-auto">
             <nav className="flex flex-col gap-1">
               {navLinks.slice(0, 2).map((link) => (
                 <Link
