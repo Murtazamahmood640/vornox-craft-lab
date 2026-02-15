@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X, ChevronDown, Globe, AppWindow, Megaphone, Search, PenTool, Palette, Monitor, CloudCog, Users } from "lucide-react";
+import { Menu, X, ChevronDown, Globe, AppWindow, Megaphone, Search, PenTool, Palette, Monitor, CloudCog, Users, LogIn, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +34,7 @@ const navLinks = [
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
 
   const isActive = (path: string) => location.pathname === path;
   const isServicesActive = location.pathname.startsWith("/services");
@@ -106,11 +108,22 @@ export function Header() {
             ))}
           </nav>
 
-          {/* CTA Button */}
-          <div className="hidden lg:block">
-            <Button asChild className="gradient-bg text-primary-foreground hover:opacity-90 shadow-brand-md">
-              <Link to="/contact">Get Started</Link>
-            </Button>
+          {/* CTA Buttons */}
+          <div className="hidden lg:flex items-center gap-2">
+            {user ? (
+              <Button asChild className="gradient-bg text-primary-foreground hover:opacity-90 shadow-brand-md">
+                <Link to="/dashboard"><LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard</Link>
+              </Button>
+            ) : (
+              <>
+                <Button asChild variant="outline">
+                  <Link to="/auth"><LogIn className="w-4 h-4 mr-2" /> Sign In</Link>
+                </Button>
+                <Button asChild className="gradient-bg text-primary-foreground hover:opacity-90 shadow-brand-md">
+                  <Link to="/contact">Get Started</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -171,10 +184,21 @@ export function Header() {
                 </Link>
               ))}
 
-              <div className="mt-4 px-4">
-                <Button asChild className="w-full gradient-bg text-primary-foreground">
-                  <Link to="/contact" onClick={() => setIsOpen(false)}>Get Started</Link>
-                </Button>
+              <div className="mt-4 px-4 space-y-2">
+                {user ? (
+                  <Button asChild className="w-full gradient-bg text-primary-foreground">
+                    <Link to="/dashboard" onClick={() => setIsOpen(false)}>Dashboard</Link>
+                  </Button>
+                ) : (
+                  <>
+                    <Button asChild variant="outline" className="w-full">
+                      <Link to="/auth" onClick={() => setIsOpen(false)}>Sign In</Link>
+                    </Button>
+                    <Button asChild className="w-full gradient-bg text-primary-foreground">
+                      <Link to="/contact" onClick={() => setIsOpen(false)}>Get Started</Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </div>
