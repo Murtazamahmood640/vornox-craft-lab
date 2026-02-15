@@ -7,40 +7,57 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
+  const checkAdmin = async (userId: string) => {
+    try {
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .eq("role", "admin")
+        .maybeSingle();
+      setIsAdmin(!!data);
+    } catch {
+      setIsAdmin(false);
+    }
+  };
+
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const u = session?.user ?? null;
-      setUser(u);
-      if (u) {
-        const { data } = await supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", u.id)
-          .eq("role", "admin")
-          .maybeSingle();
-        setIsAdmin(!!data);
-      } else {
-        setIsAdmin(false);
-      }
-      setLoading(false);
-    });
+    let mounted = true;
 
+    // Set up listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        if (!mounted) return;
+        const u = session?.user ?? null;
+        setUser(u);
+        if (u) {
+          // Use setTimeout to avoid Supabase auth deadlock
+          setTimeout(() => {
+            if (mounted) checkAdmin(u.id).finally(() => mounted && setLoading(false));
+          }, 0);
+        } else {
+          setIsAdmin(false);
+          setLoading(false);
+        }
+      }
+    );
+
+    // Then get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
       const u = session?.user ?? null;
       setUser(u);
       if (u) {
-        supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", u.id)
-          .eq("role", "admin")
-          .maybeSingle()
-          .then(({ data }) => setIsAdmin(!!data));
+        checkAdmin(u.id).finally(() => mounted && setLoading(false));
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {
