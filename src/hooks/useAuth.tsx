@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
@@ -7,58 +7,57 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const checkAdmin = async (userId: string) => {
-    try {
-      const { data } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userId)
-        .eq("role", "admin")
-        .maybeSingle();
-      setIsAdmin(!!data);
-    } catch {
-      setIsAdmin(false);
-    }
-  };
+  const checkAdmin = useCallback(async (userId: string) => {
+    const { data, error } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    console.log("Admin check:", { data, error, userId });
+    return !!data;
+  }, []);
 
   useEffect(() => {
     let mounted = true;
 
-    // Set up listener FIRST
+    const init = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!mounted) return;
+      
+      const u = session?.user ?? null;
+      setUser(u);
+      
+      if (u) {
+        const admin = await checkAdmin(u.id);
+        if (mounted) setIsAdmin(admin);
+      }
+      if (mounted) setLoading(false);
+    };
+
+    init();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         if (!mounted) return;
         const u = session?.user ?? null;
         setUser(u);
+        
         if (u) {
-          // Use setTimeout to avoid Supabase auth deadlock
-          setTimeout(() => {
-            if (mounted) checkAdmin(u.id).finally(() => mounted && setLoading(false));
-          }, 0);
+          const admin = await checkAdmin(u.id);
+          if (mounted) setIsAdmin(admin);
         } else {
           setIsAdmin(false);
-          setLoading(false);
         }
+        if (mounted) setLoading(false);
       }
     );
-
-    // Then get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!mounted) return;
-      const u = session?.user ?? null;
-      setUser(u);
-      if (u) {
-        checkAdmin(u.id).finally(() => mounted && setLoading(false));
-      } else {
-        setLoading(false);
-      }
-    });
 
     return () => {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [checkAdmin]);
 
   const signOut = async () => {
     await supabase.auth.signOut();
