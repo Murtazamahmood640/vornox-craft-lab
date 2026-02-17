@@ -79,6 +79,45 @@
     --sidebar-ring: 217 91% 60%;
   }
 
+  .light {
+    --background: 0 0% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 217 91% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217 20% 93%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 217 20% 95%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 217 91% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 217 20% 88%;
+    --input: 217 20% 88%;
+    --ring: 217 91% 50%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 217 91% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 20% 93%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 217 20% 88%;
+    --sidebar-ring: 217 91% 50%;
+  }
+
   .dark {
     --background: 222 47% 4%;
     --foreground: 210 40% 98%;
@@ -186,12 +225,12 @@
 
   .glass {
     @apply backdrop-blur-xl border border-border/50;
-    background: hsl(222 47% 9% / 0.8);
+    background: hsl(var(--background) / 0.85);
   }
 
   .glass-dark {
     @apply backdrop-blur-xl border border-border/30;
-    background: hsl(222 47% 6% / 0.9);
+    background: hsl(var(--background) / 0.92);
   }
 
   /* Animated orb styles */
