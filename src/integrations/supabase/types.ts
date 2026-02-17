@@ -162,6 +162,7 @@ export type Database = {
       projects: {
         Row: {
           admin_notes: string | null
+          attachments: string[] | null
           budget: string | null
           created_at: string
           deadline: string | null
@@ -177,6 +178,7 @@ export type Database = {
         }
         Insert: {
           admin_notes?: string | null
+          attachments?: string[] | null
           budget?: string | null
           created_at?: string
           deadline?: string | null
@@ -192,6 +194,7 @@ export type Database = {
         }
         Update: {
           admin_notes?: string | null
+          attachments?: string[] | null
           budget?: string | null
           created_at?: string
           deadline?: string | null

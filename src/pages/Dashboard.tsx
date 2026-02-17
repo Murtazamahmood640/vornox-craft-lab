@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Plus, Clock, CheckCircle2, AlertCircle, MessageCircle, LogOut, Shield } from "lucide-react";
+import { Plus, Clock, CheckCircle2, AlertCircle, MessageCircle, LogOut, Shield, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -40,6 +40,8 @@ export default function Dashboard() {
   const [commentInput, setCommentInput] = useState("");
   const [showNewForm, setShowNewForm] = useState(false);
   const [newProject, setNewProject] = useState({ title: "", description: "", service_type: "", budget: "" });
+  const [files, setFiles] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
@@ -83,20 +85,37 @@ export default function Dashboard() {
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
-    const { error } = await supabase.from("projects").insert({
-      user_id: user.id,
-      title: newProject.title,
-      description: newProject.description,
-      service_type: newProject.service_type,
-      budget: newProject.budget || null,
-    });
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-    } else {
+    setUploading(true);
+
+    try {
+      // Upload files first
+      const attachmentUrls: string[] = [];
+      for (const file of files) {
+        const filePath = `${user.id}/${Date.now()}-${file.name}`;
+        const { error: uploadError } = await supabase.storage.from("project-attachments").upload(filePath, file);
+        if (uploadError) throw uploadError;
+        const { data: urlData } = supabase.storage.from("project-attachments").getPublicUrl(filePath);
+        attachmentUrls.push(urlData.publicUrl);
+      }
+
+      const { error } = await supabase.from("projects").insert({
+        user_id: user.id,
+        title: newProject.title,
+        description: newProject.description,
+        service_type: newProject.service_type,
+        budget: newProject.budget || null,
+        attachments: attachmentUrls.length > 0 ? attachmentUrls : undefined,
+      });
+      if (error) throw error;
       toast({ title: "Service Requested!", description: "Your request has been submitted for approval." });
       setShowNewForm(false);
       setNewProject({ title: "", description: "", service_type: "", budget: "" });
+      setFiles([]);
       fetchProjects();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -160,13 +179,50 @@ export default function Dashboard() {
                   <Input value={newProject.budget} onChange={(e) => setNewProject({ ...newProject, budget: e.target.value })} placeholder="e.g. $500 - $1000" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Description</label>
-                  <Textarea value={newProject.description} onChange={(e) => setNewProject({ ...newProject, description: e.target.value })} placeholder="Tell us about your requirements..." rows={4} required />
-                </div>
-                <div className="flex gap-3">
-                  <Button type="submit" className="gradient-bg text-primary-foreground">Submit Request</Button>
-                  <Button type="button" variant="outline" onClick={() => setShowNewForm(false)}>Cancel</Button>
-                </div>
+                   <label className="block text-sm font-medium mb-1">Description</label>
+                   <Textarea value={newProject.description} onChange={(e) => setNewProject({ ...newProject, description: e.target.value })} placeholder="Tell us about your requirements..." rows={4} required />
+                 </div>
+                 
+                 {/* File Upload */}
+                 <div>
+                   <label className="block text-sm font-medium mb-1">Attachments (optional)</label>
+                   <div className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-primary/50 transition-colors">
+                     <input
+                       type="file"
+                       multiple
+                       accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
+                       onChange={(e) => {
+                         if (e.target.files) setFiles(prev => [...prev, ...Array.from(e.target.files!)]);
+                       }}
+                       className="hidden"
+                       id="file-upload"
+                     />
+                     <label htmlFor="file-upload" className="cursor-pointer">
+                       <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                       <p className="text-sm text-muted-foreground">Click to upload images, documents, or files</p>
+                       <p className="text-xs text-muted-foreground mt-1">PNG, JPG, PDF, DOC, ZIP up to 10MB each</p>
+                     </label>
+                   </div>
+                   {files.length > 0 && (
+                     <div className="flex flex-wrap gap-2 mt-3">
+                       {files.map((file, i) => (
+                         <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted text-sm">
+                           <span className="truncate max-w-[150px]">{file.name}</span>
+                           <button type="button" onClick={() => setFiles(prev => prev.filter((_, idx) => idx !== i))}>
+                             <X className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground" />
+                           </button>
+                         </div>
+                       ))}
+                     </div>
+                   )}
+                 </div>
+
+                 <div className="flex gap-3">
+                   <Button type="submit" disabled={uploading} className="gradient-bg text-primary-foreground">
+                     {uploading ? "Uploading..." : "Submit Request"}
+                   </Button>
+                   <Button type="button" variant="outline" onClick={() => { setShowNewForm(false); setFiles([]); }}>Cancel</Button>
+                 </div>
               </form>
             </div>
           )}

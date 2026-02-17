@@ -62,12 +62,12 @@
     --gradient-glow: radial-gradient(ellipse at center, hsl(217 91% 60% / 0.15) 0%, transparent 70%);
     
     /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(217 91% 60% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(217 91% 60% / 0.1), 0 2px 4px -2px hsl(217 91% 60% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(217 91% 60% / 0.1), 0 4px 6px -4px hsl(217 91% 60% / 0.1);
-    --shadow-xl: 0 20px 25px -5px hsl(217 91% 60% / 0.15), 0 8px 10px -6px hsl(217 91% 60% / 0.1);
-    --shadow-glow: 0 0 40px hsl(217 91% 60% / 0.4);
-    --shadow-glow-lg: 0 0 80px hsl(217 91% 60% / 0.3);
+    --shadow-sm: 0 1px 2px 0 hsl(217 91% 60% / 0.03);
+    --shadow-md: 0 4px 6px -1px hsl(217 91% 60% / 0.05), 0 2px 4px -2px hsl(217 91% 60% / 0.05);
+    --shadow-lg: 0 10px 15px -3px hsl(217 91% 60% / 0.06), 0 4px 6px -4px hsl(217 91% 60% / 0.04);
+    --shadow-xl: 0 20px 25px -5px hsl(217 91% 60% / 0.08), 0 8px 10px -6px hsl(217 91% 60% / 0.05);
+    --shadow-glow: 0 0 20px hsl(217 91% 60% / 0.15);
+    --shadow-glow-lg: 0 0 40px hsl(217 91% 60% / 0.1);
 
     --sidebar-background: 222 47% 9%;
     --sidebar-foreground: 210 40% 98%;
@@ -385,10 +385,10 @@
 
   @keyframes glow {
     from {
-      box-shadow: 0 0 20px hsl(217 91% 60% / 0.2), 0 0 40px hsl(217 91% 60% / 0.1);
+      box-shadow: 0 0 10px hsl(217 91% 60% / 0.1), 0 0 20px hsl(217 91% 60% / 0.05);
     }
     to {
-      box-shadow: 0 0 30px hsl(217 91% 60% / 0.4), 0 0 60px hsl(217 91% 60% / 0.2);
+      box-shadow: 0 0 15px hsl(217 91% 60% / 0.15), 0 0 30px hsl(217 91% 60% / 0.08);
     }
   }
 
@@ -403,11 +403,11 @@
 
   /* Text glow effect */
   .text-glow {
-    text-shadow: 0 0 20px hsl(217 91% 60% / 0.5), 0 0 40px hsl(217 91% 60% / 0.3);
+    text-shadow: 0 0 10px hsl(217 91% 60% / 0.2);
   }
 
   /* Border glow */
   .border-glow {
-    box-shadow: 0 0 0 1px hsl(217 91% 60% / 0.5), 0 0 20px hsl(217 91% 60% / 0.2);
+    box-shadow: 0 0 0 1px hsl(217 91% 60% / 0.3), 0 0 10px hsl(217 91% 60% / 0.08);
   }
 }
