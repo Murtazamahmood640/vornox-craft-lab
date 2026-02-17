@@ -28,8 +28,8 @@ export default function Admin() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [selected, setSelected] = useState<Project | null>(null);
+  const [projects, setProjects] = useState<(Project & { profile?: any })[]>([]);
+  const [selected, setSelected] = useState<(Project & { profile?: any }) | null>(null);
   const [milestoneTitle, setMilestoneTitle] = useState("");
   const [adminComment, setAdminComment] = useState("");
   const [comments, setComments] = useState<any[]>([]);
@@ -52,7 +52,13 @@ export default function Admin() {
 
   const fetchProjects = async () => {
     const { data } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
-    if (data) setProjects(data);
+    if (data) {
+      // Fetch profiles for all unique user_ids
+      const userIds = [...new Set(data.map(p => p.user_id))];
+      const { data: profiles } = await supabase.from("profiles").select("*").in("user_id", userIds);
+      const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+      setProjects(data.map(p => ({ ...p, profile: profileMap.get(p.user_id) })));
+    }
   };
 
   const updateStatus = async (id: string, status: string) => {
@@ -128,10 +134,38 @@ export default function Admin() {
             <div className="lg:col-span-2">
               {selected ? (
                 <div className="bg-card border border-border rounded-2xl overflow-hidden">
-                  <div className="p-6 border-b border-border">
-                    <h2 className="font-display text-2xl font-bold mb-2">{selected.title}</h2>
-                    <p className="text-sm text-muted-foreground mb-3">{selected.service_type} • Budget: {selected.budget || "N/A"}</p>
-                    {selected.description && <p className="text-sm mb-4">{selected.description}</p>}
+                   <div className="p-6 border-b border-border">
+                     <h2 className="font-display text-2xl font-bold mb-2">{selected.title}</h2>
+                     <p className="text-sm text-muted-foreground mb-3">{selected.service_type} • Budget: {selected.budget || "N/A"}</p>
+                     
+                     {/* Client Info */}
+                     {selected.profile && (
+                       <div className="mb-4 p-4 rounded-xl bg-muted/50 border border-border">
+                         <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Client Information</h4>
+                         <div className="grid grid-cols-2 gap-2 text-sm">
+                           <div><span className="text-muted-foreground">Name:</span> {selected.profile.full_name || "N/A"}</div>
+                           <div><span className="text-muted-foreground">Email:</span> {selected.profile.email || "N/A"}</div>
+                           <div><span className="text-muted-foreground">Phone:</span> {selected.profile.phone || "N/A"}</div>
+                           <div><span className="text-muted-foreground">Company:</span> {selected.profile.company || "N/A"}</div>
+                         </div>
+                       </div>
+                     )}
+
+                     {selected.description && <p className="text-sm mb-4">{selected.description}</p>}
+                     
+                     {/* Attachments */}
+                     {selected.attachments && selected.attachments.length > 0 && (
+                       <div className="mb-4">
+                         <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Attachments</h4>
+                         <div className="flex flex-wrap gap-2">
+                           {selected.attachments.map((url: string, i: number) => (
+                             <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+                               File {i + 1}
+                             </a>
+                           ))}
+                         </div>
+                       </div>
+                     )}
 
                     {/* Status Control */}
                     <div className="flex flex-wrap gap-2 mb-4">
