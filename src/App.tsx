@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import About from "./pages/About";
@@ -27,39 +28,41 @@ import RecruitmentService from "./pages/services/Recruitment";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/portfolio" element={<Portfolio />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:id" element={<BlogPost />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin" element={<Admin />} />
-          
-          {/* Service Routes */}
-          <Route path="/services/websites" element={<WebsitesService />} />
-          <Route path="/services/web-applications" element={<WebApplicationsService />} />
-          <Route path="/services/digital-marketing" element={<DigitalMarketingService />} />
-          <Route path="/services/seo" element={<SEOService />} />
-          <Route path="/services/content-writing" element={<ContentWritingService />} />
-          <Route path="/services/graphic-design" element={<GraphicDesignService />} />
-          <Route path="/services/it-consulting" element={<ITConsultingService />} />
-          <Route path="/services/saas" element={<SaaSService />} />
-          <Route path="/services/recruitment" element={<RecruitmentService />} />
-          
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:id" element={<BlogPost />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin" element={<Admin />} />
+            
+            {/* Service Routes */}
+            <Route path="/services/websites" element={<WebsitesService />} />
+            <Route path="/services/web-applications" element={<WebApplicationsService />} />
+            <Route path="/services/digital-marketing" element={<DigitalMarketingService />} />
+            <Route path="/services/seo" element={<SEOService />} />
+            <Route path="/services/content-writing" element={<ContentWritingService />} />
+            <Route path="/services/graphic-design" element={<GraphicDesignService />} />
+            <Route path="/services/it-consulting" element={<ITConsultingService />} />
+            <Route path="/services/saas" element={<SaaSService />} />
+            <Route path="/services/recruitment" element={<RecruitmentService />} />
+            
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;
