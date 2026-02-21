@@ -46,7 +46,7 @@ export function Header() {
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img src={logo} alt="Vornox Lab" className="h-10 w-auto" />
+            <img src={logo} alt="Vornox Lab" className="h-10 w-auto dark:brightness-100 brightness-0" />
           </Link>
 
           {/* Desktop Navigation */}

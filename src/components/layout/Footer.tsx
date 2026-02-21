@@ -102,14 +102,14 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-primary flex-shrink-0" />
-                <a href="tel:+1234567890" className="text-muted-foreground hover:text-primary transition-colors">
-                  +1 (234) 567-890
+                <a href="tel:03228258640" className="text-muted-foreground hover:text-primary transition-colors">
+                  03228258640
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-primary flex-shrink-0" />
-                <a href="mailto:hello@vornoxlab.com" className="text-muted-foreground hover:text-primary transition-colors">
-                  hello@vornoxlab.com
+                <a href="mailto:info@vornoxlab.com" className="text-muted-foreground hover:text-primary transition-colors">
+                  info@vornoxlab.com
                 </a>
               </li>
             </ul>
