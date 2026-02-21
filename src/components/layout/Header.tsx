@@ -1,27 +1,21 @@
 import { Link, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Menu, X, ChevronDown, Globe, AppWindow, Megaphone, Search, PenTool, Palette, Monitor, CloudCog, Users, LogIn, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import logo from "@/assets/logo.png";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 const services = [
-  { name: "Websites", href: "/services/websites", icon: Globe },
-  { name: "Web Applications", href: "/services/web-applications", icon: AppWindow },
-  { name: "Digital Marketing", href: "/services/digital-marketing", icon: Megaphone },
-  { name: "SEO", href: "/services/seo", icon: Search },
-  { name: "Content Writing", href: "/services/content-writing", icon: PenTool },
-  { name: "Graphic Design", href: "/services/graphic-design", icon: Palette },
-  { name: "IT Consulting", href: "/services/it-consulting", icon: Monitor },
-  { name: "SaaS Development", href: "/services/saas", icon: CloudCog },
-  { name: "Recruitment", href: "/services/recruitment", icon: Users },
+  { name: "Websites", href: "/services/websites", icon: Globe, desc: "Beautiful, responsive websites" },
+  { name: "Web Applications", href: "/services/web-applications", icon: AppWindow, desc: "Powerful custom web apps" },
+  { name: "Digital Marketing", href: "/services/digital-marketing", icon: Megaphone, desc: "Data-driven campaigns" },
+  { name: "SEO", href: "/services/seo", icon: Search, desc: "Boost your search rankings" },
+  { name: "Content Writing", href: "/services/content-writing", icon: PenTool, desc: "Compelling copy that converts" },
+  { name: "Graphic Design", href: "/services/graphic-design", icon: Palette, desc: "Stunning brand visuals" },
+  { name: "IT Consulting", href: "/services/it-consulting", icon: Monitor, desc: "Strategic tech guidance" },
+  { name: "SaaS Development", href: "/services/saas", icon: CloudCog, desc: "Scalable software products" },
+  { name: "Recruitment", href: "/services/recruitment", icon: Users, desc: "Find the right talent" },
 ];
 
 const navLinks = [
@@ -34,11 +28,21 @@ const navLinks = [
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [megaOpen, setMegaOpen] = useState(false);
   const location = useLocation();
   const { user } = useAuth();
+  const megaTimeout = useRef<ReturnType<typeof setTimeout>>();
 
   const isActive = (path: string) => location.pathname === path;
   const isServicesActive = location.pathname.startsWith("/services");
+
+  const openMega = () => {
+    clearTimeout(megaTimeout.current);
+    setMegaOpen(true);
+  };
+  const closeMega = () => {
+    megaTimeout.current = setTimeout(() => setMegaOpen(false), 200);
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
@@ -65,34 +69,56 @@ export function Header() {
               </Link>
             ))}
 
-            {/* Services Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-1 ${
-                    isServicesActive
-                      ? "text-primary bg-primary/10"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                  }`}
-                >
-                  Services
-                  <ChevronDown className="w-4 h-4" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 bg-popover border border-border shadow-brand-lg" align="start">
-                {services.map((service) => (
-                  <DropdownMenuItem key={service.name} asChild>
-                    <Link
-                      to={service.href}
-                      className="flex items-center gap-3 px-3 py-2.5 cursor-pointer"
-                    >
-                      <service.icon className="w-4 h-4 text-primary" />
-                      <span>{service.name}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Services Mega Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={openMega}
+              onMouseLeave={closeMega}
+            >
+              <button
+                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-1 ${
+                  isServicesActive
+                    ? "text-primary bg-primary/10"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                Services
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${megaOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {megaOpen && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50">
+                  <div className="bg-popover border border-border rounded-2xl shadow-xl p-6 w-[680px] animate-fade-in">
+                    <div className="grid grid-cols-3 gap-2">
+                      {services.map((service) => (
+                        <Link
+                          key={service.name}
+                          to={service.href}
+                          onClick={() => setMegaOpen(false)}
+                          className={`flex items-start gap-3 p-3 rounded-xl transition-colors group ${
+                            location.pathname === service.href
+                              ? "bg-primary/10"
+                              : "hover:bg-muted"
+                          }`}
+                        >
+                          <div className="w-10 h-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center flex-shrink-0 transition-colors">
+                            <service.icon className="w-5 h-5 text-primary" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">
+                              {service.name}
+                            </div>
+                            <div className="text-xs text-muted-foreground leading-snug mt-0.5">
+                              {service.desc}
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {navLinks.slice(2).map((link) => (
               <Link
