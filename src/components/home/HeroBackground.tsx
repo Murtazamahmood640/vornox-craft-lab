@@ -16,7 +16,7 @@ export function HeroBackground() {
       </video>
 
       {/* Theme-aware overlay to blend video with design */}
-      <div className="absolute inset-0 bg-background/70" />
+      <div className="absolute inset-0 bg-background/75 dark:bg-background/70" />
 
       {/* Gradient overlays for depth */}
       <motion.div

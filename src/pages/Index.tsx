@@ -93,7 +93,7 @@ export default function Index() {
               </motion.h1>
 
               <motion.p
-                className="text-lg md:text-xl text-muted-foreground max-w-lg mb-8 leading-relaxed"
+                className="text-lg md:text-xl text-foreground/70 max-w-lg mb-8 leading-relaxed"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -109,7 +109,7 @@ export default function Index() {
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
                 {["Custom Web Development", "Result-Driven Marketing", "24/7 Expert Support"].map((point) => (
-                  <div key={point} className="flex items-center gap-3 text-muted-foreground">
+                  <div key={point} className="flex items-center gap-3 text-foreground/70">
                     <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
                     <span>{point}</span>
                   </div>
