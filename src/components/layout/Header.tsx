@@ -4,7 +4,7 @@ import { Menu, X, ChevronDown, Globe, AppWindow, Megaphone, Search, PenTool, Pal
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/logo.png";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
+
 
 const services = [
   { name: "Websites", href: "/services/websites", icon: Globe, desc: "Beautiful, responsive websites" },
@@ -137,7 +137,6 @@ export function Header() {
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-2">
-            <ThemeToggle />
             {user ? (
               <Button asChild className="gradient-bg text-primary-foreground hover:opacity-90 shadow-brand-md">
                 <Link to="/dashboard"><LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard</Link>
@@ -212,9 +211,7 @@ export function Header() {
                 </Link>
               ))}
 
-              <div className="mt-4 px-4 flex items-center justify-between">
-                <ThemeToggle />
-              </div>
+              <div className="mt-4" />
               <div className="px-4 space-y-2">
                 {user ? (
                   <Button asChild className="w-full gradient-bg text-primary-foreground">

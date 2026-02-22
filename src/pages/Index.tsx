@@ -162,10 +162,11 @@ export default function Index() {
                     transition={{ delay: 0.5 + i * 0.15, type: "spring", stiffness: 200 }}
                   >
                     <motion.div
-                      className="w-16 h-16 rounded-2xl bg-card/80 border border-border/60 backdrop-blur-md flex items-center justify-center shadow-lg hover:border-primary/50 hover:shadow-glow transition-all duration-300 cursor-default group"
+                      className="w-16 h-16 rounded-2xl bg-card/80 border border-border/60 backdrop-blur-md flex flex-col items-center justify-center shadow-lg hover:border-primary/50 hover:shadow-glow transition-all duration-300 cursor-default group"
                       animate={{
-                        y: [0, -12, 0],
-                        rotate: [0, 5, -5, 0],
+                        y: [0, -14, 0],
+                        rotate: [0, 6, -6, 0],
+                        x: [0, i % 2 === 0 ? 6 : -6, 0],
                       }}
                       transition={{
                         duration: floatDuration,
@@ -173,13 +174,25 @@ export default function Index() {
                         ease: "easeInOut",
                         delay: floatDelay,
                       }}
-                      whileHover={{ scale: 1.2 }}
+                      whileHover={{ scale: 1.25, rotate: 0 }}
                     >
-                      <service.icon className="w-7 h-7 text-primary group-hover:scale-110 transition-transform" />
+                      <motion.div
+                        animate={{ 
+                          rotateY: [0, 360],
+                          scale: [1, 1.15, 1],
+                        }}
+                        transition={{
+                          rotateY: { duration: 6, repeat: Infinity, ease: "linear", delay: i * 1 },
+                          scale: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 },
+                        }}
+                      >
+                        <service.icon className="w-7 h-7 text-primary" />
+                      </motion.div>
                     </motion.div>
                     <motion.span
-                      className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-muted-foreground font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity"
-                      initial={{ opacity: 0 }}
+                      className="absolute -bottom-7 left-1/2 -translate-x-1/2 text-xs text-muted-foreground font-medium whitespace-nowrap"
+                      animate={{ opacity: [0.4, 1, 0.4] }}
+                      transition={{ duration: 3, repeat: Infinity, delay: i * 0.3 }}
                     >
                       {service.label}
                     </motion.span>

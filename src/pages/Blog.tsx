@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Calendar, Clock, User, Search, ArrowRight, Share2, Phone, Mail, MessageCircle } from "lucide-react";
+import { Calendar, Clock, User, Search, ArrowRight, Share2, Phone, Mail, MessageCircle, Facebook } from "lucide-react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { Input } from "@/components/ui/input";
@@ -151,6 +151,9 @@ export default function Blog() {
     const text = `Check out: ${post.title}`;
     
     switch (platform) {
+      case "facebook":
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`, "_blank");
+        break;
       case "whatsapp":
         window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, "_blank");
         break;
@@ -282,6 +285,10 @@ export default function Blog() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="bg-popover border border-border">
+                              <DropdownMenuItem onClick={() => handleShare("facebook", post)} className="cursor-pointer">
+                                <Facebook className="w-4 h-4 mr-2 text-blue-600" />
+                                Share on Facebook
+                              </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleShare("whatsapp", post)} className="cursor-pointer">
                                 <MessageCircle className="w-4 h-4 mr-2 text-green-500" />
                                 Share on WhatsApp
